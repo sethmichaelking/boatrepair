@@ -11,9 +11,18 @@ interface MessageBubbleProps {
 
 const renderMarkdown = (text: string) => {
   // Split by markdown patterns while preserving the delimiters
-  const parts = text.split(/(\*\*[^*]+\*\*|\n)/g);
+  const parts = text.split(/(\*\*[^*]+\*\*|###\s[^\n]+|\n)/g);
   
   return parts.map((part, index) => {
+    // Handle headers (### )
+    if (part.startsWith('### ')) {
+      return (
+        <h3 key={index} className="font-bold text-lg mt-4 mb-2 first:mt-0">
+          {part.slice(4)}
+        </h3>
+      );
+    }
+    
     // Handle bold text
     if (part.startsWith('**') && part.endsWith('**')) {
       return (
