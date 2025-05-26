@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Settings, Zap, Wrench, Clock, RotateCcw } from "lucide-react";
+import { Settings, Anchor, Wrench, Clock, RotateCcw, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import type { VariantProps } from "class-variance-authority";
 import { buttonVariants } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Sidebar,
   SidebarContent,
@@ -16,12 +16,13 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { Message } from "@/types/chat";
 
-interface ProblemHistory {
+interface Conversation {
   id: string;
-  title: string;
+  messages: Message[];
   timestamp: Date;
-  resolved: boolean;
+  title: string;
 }
 
 interface AppSidebarProps {
@@ -29,54 +30,30 @@ interface AppSidebarProps {
   selectedModel?: string;
   onModelSelect?: (model: string) => void;
   onContinueTroubleshooting: (problem: string) => void;
+  onNewChat: () => void;
+  conversations: Conversation[];
+  onLoadConversation: (conversationId: string) => void;
+  onClearHistory: () => void;
+  currentConversationId: string;
 }
 
-export function AppSidebar({ 
-  onSettingsClick, 
-  selectedModel, 
-  onModelSelect, 
-  onContinueTroubleshooting 
+export function AppSidebar({
+  onSettingsClick,
+  selectedModel,
+  onModelSelect,
+  onContinueTroubleshooting,
+  onNewChat,
+  conversations,
+  onLoadConversation,
+  onClearHistory,
+  currentConversationId
 }: AppSidebarProps) {
-  const [problems] = useState<ProblemHistory[]>([
-    {
-      id: "1",
-      title: "Engine won't start",
-      timestamp: new Date(Date.now() - 86400000), // 1 day ago
-      resolved: false
-    },
-    {
-      id: "2", 
-      title: "Battery not holding charge",
-      timestamp: new Date(Date.now() - 172800000), // 2 days ago
-      resolved: true
-    },
-    {
-      id: "3",
-      title: "Steering system issues",
-      timestamp: new Date(Date.now() - 259200000), // 3 days ago
-      resolved: false
-    }
-  ]);
-
-  const boatModels = [
-    "Sea Ray Sundancer",
-    "Bayliner Element",
-    "Grady-White Freedom",
-    "Boston Whaler Outrage",
-    "Regal Express Cruiser",
-    "Formula 280 SS",
-    "Cobalt R5",
-    "Yamaha 242X",
-    "Mercury Verado",
-    "Other/Generic"
-  ];
-
   return (
     <Sidebar className="w-80 border-r border-slate-200">
       <SidebarHeader className="p-4 border-b border-slate-200">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-            <Zap className="w-6 h-6 text-white" />
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+            <Anchor className="w-6 h-6 text-white" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-slate-800">BoatBot</h1>
@@ -84,92 +61,94 @@ export function AppSidebar({
           </div>
         </div>
 
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onNewChat}
+            className="flex-1 justify-start text-slate-600 hover:text-slate-800"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Chat
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onSettingsClick}
+            className="text-slate-600 hover:text-slate-800"
+          >
+            <Settings className="w-4 h-4" />
+          </Button>
+        </div>
+
         {selectedModel && (
-          <div className="flex items-center gap-3 bg-blue-50 px-4 py-2.5 rounded-lg border border-blue-200">
+          <div className="flex items-center gap-3 bg-blue-50 px-4 py-2.5 rounded-lg border border-blue-200 mt-4">
             <Wrench className="w-4 h-4 text-blue-600" />
             <div className="flex items-center gap-2 flex-1">
               <span className="text-sm font-medium text-blue-800">Working on:</span>
               {onModelSelect ? (
-                <Select value={selectedModel} onValueChange={onModelSelect}>
-                  <SelectTrigger className="h-8 flex-1 border-blue-300 bg-white text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {boatModels.map((model) => (
-                      <SelectItem key={model} value={model} className="text-sm">
-                        {model}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex-1">
+                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                    Boat Details
+                  </label>
+                  <Input
+                    value={selectedModel}
+                    onChange={(e) => onModelSelect(e.target.value)}
+                    placeholder="e.g. 2020 Sea Ray 320 Sundancer, Twin 350hp Mercruiser"
+                    className="h-8 flex-1 border-blue-300 bg-white text-sm"
+                  />
+                </div>
               ) : (
                 <span className="text-sm font-semibold text-blue-900">{selectedModel}</span>
               )}
             </div>
           </div>
         )}
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onSettingsClick}
-          className="mt-2 justify-start text-slate-600 hover:text-slate-800"
-        >
-          <Settings className="w-4 h-4 mr-2" />
-          Settings
-        </Button>
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="flex items-center gap-2">
-            <Wrench className="w-4 h-4" />
-            Issues you've reported
+          <SidebarGroupLabel className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Recent Conversations
+            </div>
+            {conversations.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClearHistory}
+                className="h-6 px-2 text-slate-500 hover:text-red-600"
+              >
+                <Trash2 className="w-3 h-3" />
+              </Button>
+            )}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {problems.map((problem) => (
-                <SidebarMenuItem key={problem.id}>
+              {conversations.map((conversation) => (
+                <SidebarMenuItem key={conversation.id}>
                   <SidebarMenuButton
                     className={cn(
                       "flex-col items-start gap-1 h-auto p-3 cursor-pointer",
-                      problem.resolved 
-                        ? "bg-green-50 border border-green-200" 
+                      conversation.id === currentConversationId
+                        ? "bg-blue-50 border border-blue-200"
                         : "hover:bg-slate-50"
                     )}
-                    onClick={() => onContinueTroubleshooting(problem.title)}
+                    onClick={() => onLoadConversation(conversation.id)}
                   >
                     <div className="flex items-start justify-between w-full">
                       <div className="flex-1">
                         <h3 className="font-medium text-slate-800 text-sm text-left">
-                          {problem.title}
+                          {conversation.title}
                         </h3>
                         <div className="flex items-center gap-2 mt-1">
                           <Clock className="w-3 h-3 text-slate-400" />
                           <span className="text-xs text-slate-500">
-                            {problem.timestamp.toLocaleDateString()}
+                            {new Date(conversation.timestamp).toLocaleDateString()}
                           </span>
                         </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-1">
-                        {problem.resolved ? (
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                            ✅ Resolved
-                          </span>
-                        ) : (
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            className="text-xs h-6"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onContinueTroubleshooting(problem.title);
-                            }}
-                          >
-                            <RotateCcw className="w-3 h-3 mr-1" />
-                            Continue
-                          </Button>
-                        )}
                       </div>
                     </div>
                   </SidebarMenuButton>

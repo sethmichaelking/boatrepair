@@ -1,0 +1,75 @@
+:root {
+  /* Primary colors */
+  --primary-50: #f0f7ff;
+  --primary-100: #e0f0ff;
+  --primary-200: #bae0ff;
+  --primary-300: #7cc5ff;
+  --primary-400: #36a6ff;
+  --primary-500: #0080ff;
+  --primary-600: #0066cc;
+  --primary-700: #0052a3;
+  --primary-800: #004080;
+  --primary-900: #002d5c;
+
+  /* Accent colors */
+  --accent-50: #f0f9ff;
+  --accent-100: #e0f2fe;
+  --accent-200: #bae6fd;
+  --accent-300: #7dd3fc;
+  --accent-400: #38bdf8;
+  --accent-500: #0ea5e9;
+  --accent-600: #0284c7;
+  --accent-700: #0369a1;
+  --accent-800: #075985;
+  --accent-900: #0c4a6e;
+
+  /* Neutral colors */
+  --neutral-50: #f8fafc;
+  --neutral-100: #f1f5f9;
+  --neutral-200: #e2e8f0;
+  --neutral-300: #cbd5e1;
+  --neutral-400: #94a3b8;
+  --neutral-500: #64748b;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1e293b;
+  --neutral-900: #0f172a;
+}
+
+/* Apply theme colors to Tailwind classes */
+.bg-primary {
+  background-color: var(--primary-600);
+}
+
+.bg-primary-hover:hover {
+  background-color: var(--primary-700);
+}
+
+.text-primary {
+  color: var(--primary-600);
+}
+
+.border-primary {
+  border-color: var(--primary-300);
+}
+
+.bg-accent {
+  background-color: var(--accent-600);
+}
+
+.text-accent {
+  color: var(--accent-600);
+}
+
+.border-accent {
+  border-color: var(--accent-300);
+}
+
+/* Gradient backgrounds */
+.bg-gradient-primary {
+  background: linear-gradient(to bottom right, var(--primary-600), var(--primary-700));
+}
+
+.bg-gradient-accent {
+  background: linear-gradient(to bottom right, var(--accent-600), var(--accent-700));
+}

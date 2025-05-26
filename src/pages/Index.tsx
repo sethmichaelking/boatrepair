@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChatMessages } from "@/components/ChatMessages";
 import { ChatInput } from "@/components/ChatInput";
 import { LandingPage } from "@/components/LandingPage";
@@ -6,6 +6,13 @@ import { ApiKeyModal } from "@/components/ApiKeyModal";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { Message } from "@/types/chat";
+
+interface Conversation {
+  id: string;
+  messages: Message[];
+  timestamp: Date;
+  title: string;
+}
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([
@@ -16,10 +23,27 @@ const Index = () => {
       timestamp: new Date(),
     },
   ]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [showApiModal, setShowApiModal] = useState(false);
   const [apiKey, setApiKey] = useState<string>("");
   const [selectedBoatModel, setSelectedBoatModel] = useState<string>("");
+
+  // Load conversations from localStorage on mount
+  useEffect(() => {
+    const savedConversations = localStorage.getItem("boatbot_conversations");
+    if (savedConversations) {
+      setConversations(JSON.parse(savedConversations));
+    }
+  }, []);
+
+  // Save conversations to localStorage whenever they change
+  useEffect(() => {
+    if (conversations.length > 0) {
+      localStorage.setItem("boatbot_conversations", JSON.stringify(conversations));
+    }
+  }, [conversations]);
 
   // Check for API key in localStorage on component mount
   useState(() => {
@@ -129,8 +153,49 @@ const Index = () => {
     handleSendMessage(`🔁 Continue troubleshooting: ${problem}`);
   };
 
+  const handleNewChat = () => {
+    // Save current conversation if it has user messages
+    if (messages.length > 1) {
+      const newConversation: Conversation = {
+        id: Date.now().toString(),
+        messages: [...messages],
+        timestamp: new Date(),
+        title: messages[1].content.slice(0, 50) + (messages[1].content.length > 50 ? "..." : ""),
+      };
+
+      setConversations(prev => {
+        const updated = [newConversation, ...prev].slice(0, 10); // Keep only last 10 conversations
+        return updated;
+      });
+    }
+
+    // Reset to welcome message
+    setMessages([
+      {
+        id: "welcome",
+        role: "assistant",
+        content: "Hi! I'm BoatBot, your AI assistant for boat maintenance and repairs. Upload a photo of your boat issue or ask me any questions about boat maintenance, troubleshooting, or repairs. I'm here to help!",
+        timestamp: new Date(),
+      },
+    ]);
+    setCurrentConversationId("");
+  };
+
+  const handleLoadConversation = (conversationId: string) => {
+    const conversation = conversations.find(c => c.id === conversationId);
+    if (conversation) {
+      setMessages(conversation.messages);
+      setCurrentConversationId(conversationId);
+    }
+  };
+
+  const handleClearHistory = () => {
+    setConversations([]);
+    localStorage.removeItem("boatbot_conversations");
+  };
+
   const buildMessages = async (messageHistory: Message[]) => {
-    let systemContent = `You are BoatBot, an expert AI assistant specializing in boat maintenance, repairs, and troubleshooting. You help users diagnose problems, suggest solutions, and provide maintenance advice. 
+    let systemContent = `You are BoatBot, an expert AI assistant specializing in boat maintenance, repairs, and troubleshooting. You help users diagnose problems, suggest solutions, and provide maintenance advice.
 
 FORMATTING GUIDELINES - Always format your responses for easy scanning:
 • Use clear headings with **bold text**
@@ -142,7 +207,7 @@ FORMATTING GUIDELINES - Always format your responses for easy scanning:
 • Make solutions actionable and specific
 
 When users share images, analyze them carefully for any visible issues, wear patterns, or problems. Always provide practical, safety-focused advice and suggest when professional help might be needed for complex mechanical or electrical issues.`;
-    
+
     if (selectedBoatModel && selectedBoatModel !== "Other/Generic") {
       systemContent += ` The user has a **${selectedBoatModel}** boat. Please provide model-specific advice when relevant, including known issues, specific maintenance requirements, and compatibility considerations for this model.`;
     }
@@ -211,28 +276,39 @@ When users share images, analyze them carefully for any visible issues, wear pat
             selectedModel={selectedBoatModel}
             onModelSelect={handleModelSelect}
             onContinueTroubleshooting={handleContinueTroubleshooting}
+            onNewChat={handleNewChat}
+            conversations={conversations}
+            onLoadConversation={handleLoadConversation}
+            onClearHistory={handleClearHistory}
+            currentConversationId={currentConversationId}
           />
-          
+
           <SidebarInset className="flex flex-col">
-            <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-6 py-6 pb-4">
+            <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 py-4">
               {showLandingPage ? (
-                <LandingPage 
-                  onExampleClick={handleExampleClick}
-                />
+                <div className="flex-1 flex flex-col -mt-2">
+                  <LandingPage
+                    onExampleClick={handleExampleClick}
+                  />
+                </div>
               ) : (
-                <ChatMessages 
-                  messages={messages} 
-                  isLoading={isLoading} 
-                  onRepairFlowAction={handleRepairFlowAction}
-                  selectedModel={selectedBoatModel}
-                />
+                <div className="flex-1 flex flex-col">
+                  <ChatMessages
+                    messages={messages}
+                    isLoading={isLoading}
+                    onRepairFlowAction={handleRepairFlowAction}
+                    selectedModel={selectedBoatModel}
+                  />
+                </div>
               )}
-              <ChatInput 
-                onSendMessage={handleSendMessage} 
-                disabled={isLoading}
-                selectedModel={selectedBoatModel}
-                onModelSelect={handleModelSelect}
-              />
+              <div className="mt-3 pb-6">
+                <ChatInput
+                  onSendMessage={handleSendMessage}
+                  disabled={isLoading}
+                  selectedModel={selectedBoatModel}
+                  onModelSelect={handleModelSelect}
+                />
+              </div>
             </div>
           </SidebarInset>
         </div>
@@ -242,6 +318,8 @@ When users share images, analyze them carefully for any visible issues, wear pat
           onClose={() => setShowApiModal(false)}
           onSubmit={handleApiKeySubmit}
           currentApiKey={apiKey}
+          selectedModel={selectedBoatModel}
+          onModelSelect={handleModelSelect}
         />
       </SidebarProvider>
     </div>

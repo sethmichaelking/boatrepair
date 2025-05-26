@@ -3,7 +3,7 @@ import { Camera, X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { VariantProps } from "class-variance-authority";
 import { buttonVariants } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { QuickInsertPrompts } from "./QuickInsertPrompts";
 
@@ -80,48 +80,16 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 ml-12 mr-6 mb-6">
-      {/* Quick Insert Prompts */}
-      <QuickInsertPrompts 
-        selectedModel={selectedModel} 
-        onPromptSelect={handlePromptSelect} 
-      />
-
-      {imagePreview && (
-        <div className="mb-4 relative inline-block">
-          <img
-            src={imagePreview}
-            alt="Preview"
-            className="max-w-32 h-auto rounded-lg border border-slate-200"
+    <div className="w-full">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {selectedModel && (
+          <QuickInsertPrompts
+            selectedModel={selectedModel}
+            onPromptSelect={handlePromptSelect}
           />
-          <Button
-            variant="destructive"
-            size="sm"
-            className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0"
-            onClick={removeImage}
-          >
-            <X className="w-3 h-3" />
-          </Button>
-        </div>
-      )}
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-3">
         <div className="flex items-center gap-3">
-          <div className="flex-shrink-0 w-48">
-            <Select value={selectedModel} onValueChange={onModelSelect}>
-              <SelectTrigger className="h-12 border-slate-200 focus:border-blue-300 focus:ring-blue-300">
-                <SelectValue placeholder="Select boat model..." />
-              </SelectTrigger>
-              <SelectContent className="bg-white border border-slate-200 shadow-lg z-50">
-                {boatModels.map((model) => (
-                  <SelectItem key={model} value={model} className="hover:bg-slate-50">
-                    {model}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
           <div className="flex-1">
             <textarea
               value={message}
@@ -135,7 +103,7 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
               rows={1}
             />
           </div>
-          
+
           <div className="flex gap-2 flex-shrink-0">
             <input
               ref={fileInputRef}
@@ -144,7 +112,7 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
               onChange={handleImageSelect}
               className="hidden"
             />
-            
+
             <Button
               type="button"
               variant="outline"
@@ -154,7 +122,7 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
             >
               <Camera className="w-4 h-4" />
             </Button>
-            
+
             <Button
               type="submit"
               disabled={disabled || (!message.trim() && !selectedImage)}
