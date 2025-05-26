@@ -125,15 +125,15 @@ export const ErrorCodeLookup = ({ onSendToChat }: ErrorCodeLookupProps) => {
   };
 
   return (
-    <Card className="mb-4">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
+    <Card className="mb-6">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-3 text-lg">
           <AlertCircle className="w-5 h-5 text-blue-600" />
           Error Code & Symptom Decoder
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex gap-2">
+      <CardContent className="space-y-5">
+        <div className="flex gap-3">
           <Input
             placeholder="Enter error code (e.g. E07) or symptom (e.g. motor whines)"
             value={searchQuery}
@@ -141,37 +141,40 @@ export const ErrorCodeLookup = ({ onSendToChat }: ErrorCodeLookupProps) => {
             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
             className="flex-1"
           />
-          <Button onClick={handleSearch} size="sm">
+          <Button onClick={handleSearch} size="sm" className="px-4">
             <Search className="w-4 h-4" />
           </Button>
         </div>
 
         {result && (
-          <div className="space-y-3 p-4 bg-slate-50 rounded-lg">
+          <div className="space-y-4 p-5 bg-slate-50 rounded-lg border">
             <div className="flex items-center justify-between">
-              <h4 className="font-semibold text-slate-800">{result.issue}</h4>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(result.difficulty)}`}>
+              <h4 className="font-semibold text-slate-800 text-base">{result.issue}</h4>
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(result.difficulty)}`}>
                 {result.difficulty}
               </span>
             </div>
             
-            <div className="space-y-2">
-              <div className="flex items-start gap-2">
-                <Wrench className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="font-medium text-sm text-slate-700">Fix:</p>
-                  <p className="text-sm text-slate-600">{result.fix}</p>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <Wrench className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />
+                <div className="space-y-1">
+                  <p className="font-medium text-sm text-slate-700">Solution:</p>
+                  <p className="text-sm text-slate-600 leading-relaxed">{result.fix}</p>
                 </div>
               </div>
 
               {result.partsNeeded && (
-                <div className="flex items-start gap-2">
-                  <Package className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                  <div>
+                <div className="flex items-start gap-3">
+                  <Package className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
+                  <div className="space-y-1">
                     <p className="font-medium text-sm text-slate-700">Parts Needed:</p>
-                    <ul className="text-sm text-slate-600">
+                    <ul className="text-sm text-slate-600 space-y-1">
                       {result.partsNeeded.map((part, index) => (
-                        <li key={index}>• {part}</li>
+                        <li key={index} className="flex items-center gap-2">
+                          <span className="w-1 h-1 bg-slate-400 rounded-full"></span>
+                          {part}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -179,11 +182,11 @@ export const ErrorCodeLookup = ({ onSendToChat }: ErrorCodeLookupProps) => {
               )}
 
               {result.caution && (
-                <div className="flex items-start gap-2 p-2 bg-yellow-50 rounded border border-yellow-200">
-                  <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
-                  <div>
+                <div className="flex items-start gap-3 p-3 bg-yellow-50 rounded-md border border-yellow-200">
+                  <AlertCircle className="w-4 h-4 text-yellow-600 mt-1 flex-shrink-0" />
+                  <div className="space-y-1">
                     <p className="font-medium text-sm text-yellow-800">Caution:</p>
-                    <p className="text-sm text-yellow-700">{result.caution}</p>
+                    <p className="text-sm text-yellow-700 leading-relaxed">{result.caution}</p>
                   </div>
                 </div>
               )}
@@ -193,24 +196,26 @@ export const ErrorCodeLookup = ({ onSendToChat }: ErrorCodeLookupProps) => {
               onClick={handleSendToChat}
               variant="outline"
               size="sm"
-              className="w-full mt-3"
+              className="w-full mt-4"
             >
-              Send to Chat for More Help
+              Get More Help in Chat
             </Button>
           </div>
         )}
 
         {searchQuery && !result && searchQuery.length > 0 && (
           <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-            <p className="text-sm text-orange-800">
-              No results found for "{searchQuery}". Try entering a common error code (E01-E08) or symptom like "motor whines" or "battery not charging".
+            <p className="text-sm text-orange-800 leading-relaxed">
+              No results found for "{searchQuery}". Try a common error code or symptom.
             </p>
           </div>
         )}
 
-        <div className="text-xs text-slate-500">
-          <p className="font-medium mb-1">Common error codes:</p>
-          <p>E01 (Hall sensor), E02 (Temperature), E03 (Short circuit), E07 (Overload), E08 (Battery)</p>
+        <div className="pt-2 border-t border-slate-100">
+          <p className="text-xs font-medium text-slate-600 mb-2">Common error codes:</p>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            E01 (Hall sensor) • E02 (Temperature) • E03 (Short circuit) • E07 (Overload) • E08 (Battery)
+          </p>
         </div>
       </CardContent>
     </Card>
