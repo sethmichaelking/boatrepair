@@ -23,8 +23,8 @@ const renderMarkdown = (text: string) => {
       );
     }
     
-    // Handle bold text
-    if (part.startsWith('**') && part.endsWith('**')) {
+    // Handle bold text - check if it starts AND ends with **
+    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
       return (
         <strong key={index} className="font-semibold">
           {part.slice(2, -2)}
