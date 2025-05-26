@@ -1,0 +1,124 @@
+
+import { useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Send, Camera, X } from "lucide-react";
+import { toast } from "sonner";
+
+interface ChatInputProps {
+  onSendMessage: (content: string, imageFile?: File) => void;
+  disabled: boolean;
+}
+
+export const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
+  const [message, setMessage] = useState("");
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!message.trim() && !selectedImage) return;
+
+    onSendMessage(message.trim() || "Please analyze this image", selectedImage || undefined);
+    setMessage("");
+    setSelectedImage(null);
+    setImagePreview(null);
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("Image size must be less than 10MB");
+        return;
+      }
+
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
+      {imagePreview && (
+        <div className="mb-4 relative inline-block">
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="max-w-32 h-auto rounded-lg border border-slate-200"
+          />
+          <Button
+            variant="destructive"
+            size="sm"
+            className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0"
+            onClick={removeImage}
+          >
+            <X className="w-3 h-3" />
+          </Button>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex gap-3">
+        <div className="flex-1">
+          <Textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Ask about your electric bike or describe the issue..."
+            className="min-h-[48px] max-h-32 resize-none border-slate-200 focus:border-blue-300 focus:ring-blue-300"
+            disabled={disabled}
+          />
+        </div>
+        
+        <div className="flex flex-col gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageSelect}
+            className="hidden"
+          />
+          
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={disabled}
+            className="w-12 h-12 p-0"
+          >
+            <Camera className="w-4 h-4" />
+          </Button>
+          
+          <Button
+            type="submit"
+            disabled={disabled || (!message.trim() && !selectedImage)}
+            className="w-12 h-12 p-0 bg-blue-500 hover:bg-blue-600"
+          >
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+};

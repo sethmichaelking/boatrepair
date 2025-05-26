@@ -1,12 +1,164 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from "react";
+import { ChatHeader } from "@/components/ChatHeader";
+import { ChatMessages } from "@/components/ChatMessages";
+import { ChatInput } from "@/components/ChatInput";
+import { ApiKeyModal } from "@/components/ApiKeyModal";
+import { Message } from "@/types/chat";
 
 const Index = () => {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "welcome",
+      role: "assistant",
+      content: "Hi! I'm BikeBot, your AI assistant for electric bike maintenance and repairs. Upload a photo of your bike issue or ask me any questions about electric bike maintenance, troubleshooting, or repairs. I'm here to help!",
+      timestamp: new Date(),
+    },
+  ]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showApiModal, setShowApiModal] = useState(false);
+  const [apiKey, setApiKey] = useState<string>("");
+
+  // Check for API key in localStorage on component mount
+  useState(() => {
+    const savedApiKey = localStorage.getItem("openai_api_key");
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+    } else {
+      setShowApiModal(true);
+    }
+  });
+
+  const handleSendMessage = async (content: string, imageFile?: File) => {
+    if (!apiKey) {
+      setShowApiModal(true);
+      return;
+    }
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content,
+      timestamp: new Date(),
+      imageFile,
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-4o",
+          messages: await buildMessages([...messages, userMessage]),
+          max_tokens: 1000,
+          temperature: 0.7,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: data.choices[0].message.content,
+        timestamp: new Date(),
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error("Error calling OpenAI API:", error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "Sorry, I encountered an error while processing your request. Please check your API key and try again.",
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const buildMessages = async (messageHistory: Message[]) => {
+    const systemMessage = {
+      role: "system",
+      content: "You are BikeBot, an expert AI assistant specializing in electric bike maintenance, repairs, and troubleshooting. You help users diagnose problems, suggest solutions, and provide maintenance advice. When users share images, analyze them carefully for any visible issues, wear patterns, or problems. Always provide practical, safety-focused advice and suggest when professional help might be needed for complex electrical or mechanical issues."
+    };
+
+    const chatMessages = await Promise.all(
+      messageHistory.slice(1).map(async (msg) => {
+        if (msg.imageFile) {
+          const base64Image = await fileToBase64(msg.imageFile);
+          return {
+            role: msg.role,
+            content: [
+              {
+                type: "text",
+                text: msg.content,
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:${msg.imageFile.type};base64,${base64Image}`,
+                },
+              },
+            ],
+          };
+        } else {
+          return {
+            role: msg.role,
+            content: msg.content,
+          };
+        }
+      })
+    );
+
+    return [systemMessage, ...chatMessages];
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        const base64Data = base64String.split(',')[1];
+        resolve(base64Data);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleApiKeySubmit = (key: string) => {
+    setApiKey(key);
+    localStorage.setItem("openai_api_key", key);
+    setShowApiModal(false);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col">
+      <ChatHeader onSettingsClick={() => setShowApiModal(true)} />
+      
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4">
+        <ChatMessages messages={messages} isLoading={isLoading} />
+        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
       </div>
+
+      <ApiKeyModal
+        isOpen={showApiModal}
+        onClose={() => setShowApiModal(false)}
+        onSubmit={handleApiKeySubmit}
+        currentApiKey={apiKey}
+      />
     </div>
   );
 };
