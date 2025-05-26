@@ -1,6 +1,7 @@
-
 import { Zap, Camera, MessageSquare, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { VariantProps } from "class-variance-authority";
+import { buttonVariants } from "@/components/ui/button";
 
 interface LandingPageProps {
   onExampleClick: (text: string) => void;
@@ -11,26 +12,26 @@ export const LandingPage = ({ onExampleClick }: LandingPageProps) => {
     {
       icon: <Camera className="w-5 h-5" />,
       title: "Photo Diagnosis",
-      description: "Upload a photo of your bike issue",
-      prompt: "I'd like to upload a photo of my bike issue for diagnosis"
+      description: "Upload a photo of your boat issue",
+      prompt: "I'd like to upload a photo of my boat issue for diagnosis"
     },
     {
       icon: <Zap className="w-5 h-5" />,
-      title: "Battery Issues",
-      description: "Battery not charging or losing power quickly",
-      prompt: "My battery isn't charging properly and seems to lose power quickly. Can you help me troubleshoot?"
+      title: "Engine Issues",
+      description: "Engine not starting or running poorly",
+      prompt: "My engine isn't starting properly and seems to run rough. Can you help me troubleshoot?"
     },
     {
       icon: <Wrench className="w-5 h-5" />,
-      title: "Motor Problems",
-      description: "Strange noises or performance issues",
-      prompt: "My motor is making unusual noises and the performance seems reduced. What could be wrong?"
+      title: "Mechanical Problems",
+      description: "Steering, electrical, or hull issues",
+      prompt: "My steering feels loose and there are some electrical issues. What could be wrong?"
     },
     {
       icon: <MessageSquare className="w-5 h-5" />,
       title: "General Maintenance",
       description: "Regular maintenance and care tips",
-      prompt: "Can you give me a maintenance schedule and tips for keeping my electric bike in good condition?"
+      prompt: "Can you give me a maintenance schedule and tips for keeping my boat in good condition?"
     }
   ];
 
@@ -41,10 +42,10 @@ export const LandingPage = ({ onExampleClick }: LandingPageProps) => {
           <Zap className="w-10 h-10 text-white" />
         </div>
         <h1 className="text-4xl font-bold text-slate-800 mb-4">
-          Welcome to BikeBot
+          Welcome to BoatBot
         </h1>
         <p className="text-xl text-slate-600 mb-8 max-w-2xl">
-          Your AI-powered electric bike maintenance and repair assistant. Get expert help with diagnostics, troubleshooting, and maintenance guidance.
+          Your AI-powered boat maintenance and repair assistant. Get expert help with diagnostics, troubleshooting, and maintenance guidance.
         </p>
       </div>
 

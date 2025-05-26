@@ -1,73 +1,53 @@
-# Welcome to your Lovable project
+# BoatBot - AI Boat Repair Assistant
 
-## Project info
+BoatBot is an AI-powered assistant that helps boat owners with maintenance, repairs, and troubleshooting. It provides expert guidance for various boat models and can analyze photos of issues to provide specific repair advice.
 
-**URL**: https://lovable.dev/projects/11a9ca3f-b31e-46ac-bc1b-178db12a934c
+## Features
 
-## How can I edit this code?
+- 🤖 AI-powered boat maintenance and repair assistance
+- 📸 Photo analysis for issue diagnosis
+- 🚤 Support for multiple boat models
+- 🔧 Detailed repair instructions and troubleshooting guides
+- 🛠️ Tool suggestions for repairs
+- ⚡ Quick access to common issues and solutions
+- 🔍 Known issue detection for specific boat models
 
-There are several ways of editing your application.
+## Getting Started
 
-**Use Lovable**
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/boatrepair.git
+cd boatrepair
+```
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/11a9ca3f-b31e-46ac-bc1b-178db12a934c) and start prompting.
+2. Install dependencies:
+```bash
+npm install
+```
 
-Changes made via Lovable will be committed automatically to this repo.
+3. Create a `.env` file in the root directory and add your OpenAI API key:
+```
+VITE_OPENAI_API_KEY=your_api_key_here
+```
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+4. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Tech Stack
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
 - React
-- shadcn-ui
+- TypeScript
+- Vite
+- OpenAI GPT-4
 - Tailwind CSS
+- Shadcn/ui Components
 
-## How can I deploy this project?
+## Contributing
 
-Simply open [Lovable](https://lovable.dev/projects/11a9ca3f-b31e-46ac-bc1b-178db12a934c) and click on Share -> Publish.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Can I connect a custom domain to my Lovable project?
+## License
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is licensed under the MIT License - see the LICENSE file for details.

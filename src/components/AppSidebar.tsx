@@ -1,7 +1,8 @@
-
 import { useState } from "react";
 import { Settings, Zap, Wrench, Clock, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { VariantProps } from "class-variance-authority";
+import { buttonVariants } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Sidebar,
@@ -39,34 +40,34 @@ export function AppSidebar({
   const [problems] = useState<ProblemHistory[]>([
     {
       id: "1",
-      title: "Bike won't power on",
+      title: "Engine won't start",
       timestamp: new Date(Date.now() - 86400000), // 1 day ago
       resolved: false
     },
     {
       id: "2", 
-      title: "Battery rattling at high speed",
+      title: "Battery not holding charge",
       timestamp: new Date(Date.now() - 172800000), // 2 days ago
       resolved: true
     },
     {
       id: "3",
-      title: "Throttle unresponsive",
+      title: "Steering system issues",
       timestamp: new Date(Date.now() - 259200000), // 3 days ago
       resolved: false
     }
   ]);
 
-  const bikeModels = [
-    "Macfox X2",
-    "Rad Power RadCity",
-    "Trek Verve+",
-    "Specialized Turbo Vado",
-    "Cannondale Quick Neo",
-    "Giant Quick-E+",
-    "Yamaha CrossCore",
-    "Bosch Performance Line",
-    "Bafang Mid-Drive",
+  const boatModels = [
+    "Sea Ray Sundancer",
+    "Bayliner Element",
+    "Grady-White Freedom",
+    "Boston Whaler Outrage",
+    "Regal Express Cruiser",
+    "Formula 280 SS",
+    "Cobalt R5",
+    "Yamaha 242X",
+    "Mercury Verado",
     "Other/Generic"
   ];
 
@@ -78,8 +79,8 @@ export function AppSidebar({
             <Zap className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-800">BikeBot</h1>
-            <p className="text-sm text-slate-600">Electric Bike AI Assistant</p>
+            <h1 className="text-xl font-bold text-slate-800">BoatBot</h1>
+            <p className="text-sm text-slate-600">Boat Repair AI Assistant</p>
           </div>
         </div>
 
@@ -94,7 +95,7 @@ export function AppSidebar({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {bikeModels.map((model) => (
+                    {boatModels.map((model) => (
                       <SelectItem key={model} value={model} className="text-sm">
                         {model}
                       </SelectItem>

@@ -1,6 +1,7 @@
-
 import { Settings, Zap, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { VariantProps } from "class-variance-authority";
+import { buttonVariants } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface ChatHeaderProps {
@@ -10,16 +11,16 @@ interface ChatHeaderProps {
 }
 
 export const ChatHeader = ({ onSettingsClick, selectedModel, onModelSelect }: ChatHeaderProps) => {
-  const bikeModels = [
-    "Macfox X2",
-    "Rad Power RadCity",
-    "Trek Verve+",
-    "Specialized Turbo Vado",
-    "Cannondale Quick Neo",
-    "Giant Quick-E+",
-    "Yamaha CrossCore",
-    "Bosch Performance Line",
-    "Bafang Mid-Drive",
+  const boatModels = [
+    "Sea Ray Sundancer",
+    "Bayliner Element",
+    "Grady-White Freedom",
+    "Boston Whaler Outrage",
+    "Regal Express Cruiser",
+    "Formula 280 SS",
+    "Cobalt R5",
+    "Yamaha 242X",
+    "Mercury Verado",
     "Other/Generic"
   ];
 
@@ -31,8 +32,8 @@ export const ChatHeader = ({ onSettingsClick, selectedModel, onModelSelect }: Ch
             <Zap className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-800">BikeBot</h1>
-            <p className="text-sm text-slate-600">Electric Bike AI Assistant</p>
+            <h1 className="text-xl font-bold text-slate-800">BoatBot</h1>
+            <p className="text-sm text-slate-600">Boat Repair AI Assistant</p>
           </div>
         </div>
 
@@ -48,7 +49,7 @@ export const ChatHeader = ({ onSettingsClick, selectedModel, onModelSelect }: Ch
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {bikeModels.map((model) => (
+                      {boatModels.map((model) => (
                         <SelectItem key={model} value={model} className="text-sm">
                           {model}
                         </SelectItem>

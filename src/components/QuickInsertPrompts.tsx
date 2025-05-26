@@ -1,5 +1,6 @@
-
 import { Button } from "@/components/ui/button";
+import type { VariantProps } from "class-variance-authority";
+import { buttonVariants } from "@/components/ui/button";
 
 interface QuickInsertPromptsProps {
   selectedModel: string;
@@ -7,34 +8,34 @@ interface QuickInsertPromptsProps {
 }
 
 const modelPrompts: Record<string, string[]> = {
-  "Macfox X2": [
-    "Macfox battery rattling fix",
-    "Macfox error codes",
-    "Macfox controller replacement steps",
-    "Macfox display not working",
-    "Macfox charging issues"
+  "Sea Ray Sundancer": [
+    "Engine overheating fix",
+    "Steering system troubleshooting",
+    "Electrical system diagnosis",
+    "Bilge pump replacement",
+    "Fuel system maintenance"
   ],
-  "Rad Power RadCity": [
-    "RadCity battery removal guide",
-    "RadCity brake adjustment",
-    "RadCity motor troubleshooting",
-    "RadCity tire pressure specs"
+  "Bayliner Element": [
+    "Battery replacement guide",
+    "Steering cable adjustment",
+    "Engine troubleshooting",
+    "Hull maintenance tips"
   ],
-  "Trek Verve+": [
-    "Trek Verve+ Bosch system errors",
-    "Trek Verve+ chain maintenance",
-    "Trek Verve+ gear shifting issues"
+  "Grady-White Freedom": [
+    "Outboard mounting issues",
+    "Hull stress crack repair",
+    "Navigation system setup"
   ],
-  "Specialized Turbo Vado": [
-    "Turbo Vado motor noise",
-    "Turbo Vado battery calibration",
-    "Turbo Vado Mission Control app issues"
+  "Boston Whaler Outrage": [
+    "Engine noise diagnosis",
+    "Navigation system sync",
+    "Battery maintenance"
   ],
   "Other/Generic": [
-    "E-bike won't turn on",
+    "Engine won't start",
     "Battery charging problems",
-    "Motor cutting out randomly",
-    "Display showing error codes"
+    "Steering system issues",
+    "Electrical system troubleshooting"
   ]
 };
 

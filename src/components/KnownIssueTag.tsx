@@ -1,29 +1,28 @@
-
 interface KnownIssueTagProps {
   issue: string;
   model: string;
 }
 
 const knownIssues: Record<string, string[]> = {
-  "Macfox X2": [
-    "throttle delay",
-    "battery rattling",
-    "controller overheating",
-    "display flickering"
+  "Sea Ray Sundancer": [
+    "steering stiffness",
+    "engine overheating",
+    "electrical system issues",
+    "bilge pump failure"
   ],
-  "Rad Power RadCity": [
-    "brake squeal",
-    "motor cutting out",
-    "battery not charging"
+  "Bayliner Element": [
+    "fuel system problems",
+    "steering cable wear",
+    "battery drainage"
   ],
-  "Trek Verve+": [
-    "bosch error 500",
-    "chain skipping",
+  "Grady-White Freedom": [
+    "outboard mounting issues",
+    "hull stress cracks",
     "range decrease"
   ],
-  "Specialized Turbo Vado": [
-    "motor noise",
-    "mission control sync",
+  "Boston Whaler Outrage": [
+    "engine noise",
+    "navigation system sync",
     "battery drain"
   ]
 };

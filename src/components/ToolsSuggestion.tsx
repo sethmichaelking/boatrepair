@@ -1,21 +1,20 @@
-
 interface ToolsSuggestionProps {
   content: string;
 }
 
 const toolMappings: Record<string, string[]> = {
-  "crank arm": ["crank puller", "15mm wrench"],
-  "rear wheel": ["15mm wrench", "tire levers"],
-  "front wheel": ["15mm wrench", "tire levers"],
-  "brake pads": ["4mm hex key", "Phillips screwdriver"],
-  "chain": ["chain tool", "chain lubricant"],
-  "derailleur": ["2mm hex key", "3mm hex key"],
-  "handlebar": ["4mm hex key", "5mm hex key"],
-  "seat post": ["4mm hex key", "5mm hex key"],
-  "pedals": ["15mm pedal wrench"],
-  "battery": ["4mm hex key", "Phillips screwdriver"],
-  "controller": ["Phillips screwdriver", "2mm hex key"],
-  "display": ["Phillips screwdriver", "3mm hex key"]
+  "engine": ["socket set", "wrench set", "multimeter"],
+  "propeller": ["propeller wrench", "torque wrench"],
+  "steering": ["steering cable tool", "adjustable wrench"],
+  "electrical": ["multimeter", "wire strippers", "crimping tool"],
+  "hull": ["fiberglass repair kit", "marine sealant"],
+  "fuel system": ["fuel line disconnect tool", "pressure gauge"],
+  "bilge pump": ["screwdriver set", "pliers"],
+  "battery": ["battery terminal cleaner", "multimeter"],
+  "outboard": ["outboard service kit", "torque wrench"],
+  "navigation": ["screwdriver set", "wire strippers"],
+  "plumbing": ["pipe wrench", "pliers"],
+  "canvas": ["sewing kit", "marine thread"]
 };
 
 export const ToolsSuggestion = ({ content }: ToolsSuggestionProps) => {

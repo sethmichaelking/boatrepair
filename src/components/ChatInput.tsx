@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
+import { Camera, X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { VariantProps } from "class-variance-authority";
+import { buttonVariants } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Camera, X } from "lucide-react";
 import { toast } from "sonner";
 import { QuickInsertPrompts } from "./QuickInsertPrompts";
 
@@ -18,16 +20,16 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const bikeModels = [
-    "Macfox X2",
-    "Rad Power RadCity",
-    "Trek Verve+",
-    "Specialized Turbo Vado",
-    "Cannondale Quick Neo",
-    "Giant Quick-E+",
-    "Yamaha CrossCore",
-    "Bosch Performance Line",
-    "Bafang Mid-Drive",
+  const boatModels = [
+    "Sea Ray Sundancer",
+    "Bayliner Element",
+    "Grady-White Freedom",
+    "Boston Whaler Outrage",
+    "Regal Express Cruiser",
+    "Formula 280 SS",
+    "Cobalt R5",
+    "Yamaha 242X",
+    "Mercury Verado",
     "Other/Generic"
   ];
 
@@ -108,10 +110,10 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
           <div className="flex-shrink-0 w-48">
             <Select value={selectedModel} onValueChange={onModelSelect}>
               <SelectTrigger className="h-12 border-slate-200 focus:border-blue-300 focus:ring-blue-300">
-                <SelectValue placeholder="Select bike model..." />
+                <SelectValue placeholder="Select boat model..." />
               </SelectTrigger>
               <SelectContent className="bg-white border border-slate-200 shadow-lg z-50">
-                {bikeModels.map((model) => (
+                {boatModels.map((model) => (
                   <SelectItem key={model} value={model} className="hover:bg-slate-50">
                     {model}
                   </SelectItem>
@@ -127,7 +129,7 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
                 setMessage(e.target.value);
               }}
               onKeyPress={handleKeyPress}
-              placeholder="Ask about your electric bike or describe the issue..."
+              placeholder="Ask about your boat or describe the issue..."
               className="w-full h-12 px-3 py-3 text-sm border border-slate-200 rounded-md bg-white focus:border-blue-300 focus:ring-2 focus:ring-blue-300 focus:ring-opacity-20 outline-none resize-none overflow-hidden"
               disabled={disabled}
               rows={1}

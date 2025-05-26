@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ChatMessages } from "@/components/ChatMessages";
 import { ChatInput } from "@/components/ChatInput";
@@ -13,26 +12,26 @@ const Index = () => {
     {
       id: "welcome",
       role: "assistant",
-      content: "Hi! I'm BikeBot, your AI assistant for electric bike maintenance and repairs. Upload a photo of your bike issue or ask me any questions about electric bike maintenance, troubleshooting, or repairs. I'm here to help!",
+      content: "Hi! I'm BoatBot, your AI assistant for boat maintenance and repairs. Upload a photo of your boat issue or ask me any questions about boat maintenance, troubleshooting, or repairs. I'm here to help!",
       timestamp: new Date(),
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [showApiModal, setShowApiModal] = useState(false);
   const [apiKey, setApiKey] = useState<string>("");
-  const [selectedBikeModel, setSelectedBikeModel] = useState<string>("");
+  const [selectedBoatModel, setSelectedBoatModel] = useState<string>("");
 
   // Check for API key in localStorage on component mount
   useState(() => {
     const savedApiKey = localStorage.getItem("openai_api_key");
-    const savedBikeModel = localStorage.getItem("selected_bike_model");
+    const savedBoatModel = localStorage.getItem("selected_boat_model");
     if (savedApiKey) {
       setApiKey(savedApiKey);
     } else {
       setShowApiModal(true);
     }
-    if (savedBikeModel) {
-      setSelectedBikeModel(savedBikeModel);
+    if (savedBoatModel) {
+      setSelectedBoatModel(savedBoatModel);
     }
   });
 
@@ -104,8 +103,8 @@ const Index = () => {
   };
 
   const handleModelSelect = (model: string) => {
-    setSelectedBikeModel(model);
-    localStorage.setItem("selected_bike_model", model);
+    setSelectedBoatModel(model);
+    localStorage.setItem("selected_boat_model", model);
   };
 
   const handleRepairFlowAction = (action: 'worked' | 'didnt-help' | 'send-photo') => {
@@ -131,7 +130,7 @@ const Index = () => {
   };
 
   const buildMessages = async (messageHistory: Message[]) => {
-    let systemContent = `You are BikeBot, an expert AI assistant specializing in electric bike maintenance, repairs, and troubleshooting. You help users diagnose problems, suggest solutions, and provide maintenance advice. 
+    let systemContent = `You are BoatBot, an expert AI assistant specializing in boat maintenance, repairs, and troubleshooting. You help users diagnose problems, suggest solutions, and provide maintenance advice. 
 
 FORMATTING GUIDELINES - Always format your responses for easy scanning:
 • Use clear headings with **bold text**
@@ -142,10 +141,10 @@ FORMATTING GUIDELINES - Always format your responses for easy scanning:
 • Structure troubleshooting steps clearly
 • Make solutions actionable and specific
 
-When users share images, analyze them carefully for any visible issues, wear patterns, or problems. Always provide practical, safety-focused advice and suggest when professional help might be needed for complex electrical or mechanical issues.`;
+When users share images, analyze them carefully for any visible issues, wear patterns, or problems. Always provide practical, safety-focused advice and suggest when professional help might be needed for complex mechanical or electrical issues.`;
     
-    if (selectedBikeModel && selectedBikeModel !== "Other/Generic") {
-      systemContent += ` The user has a **${selectedBikeModel}** electric bike. Please provide model-specific advice when relevant, including known issues, specific maintenance requirements, and compatibility considerations for this model.`;
+    if (selectedBoatModel && selectedBoatModel !== "Other/Generic") {
+      systemContent += ` The user has a **${selectedBoatModel}** boat. Please provide model-specific advice when relevant, including known issues, specific maintenance requirements, and compatibility considerations for this model.`;
     }
 
     const systemMessage = {
@@ -209,7 +208,7 @@ When users share images, analyze them carefully for any visible issues, wear pat
         <div className="flex min-h-screen w-full">
           <AppSidebar
             onSettingsClick={() => setShowApiModal(true)}
-            selectedModel={selectedBikeModel}
+            selectedModel={selectedBoatModel}
             onModelSelect={handleModelSelect}
             onContinueTroubleshooting={handleContinueTroubleshooting}
           />
@@ -225,13 +224,13 @@ When users share images, analyze them carefully for any visible issues, wear pat
                   messages={messages} 
                   isLoading={isLoading} 
                   onRepairFlowAction={handleRepairFlowAction}
-                  selectedModel={selectedBikeModel}
+                  selectedModel={selectedBoatModel}
                 />
               )}
               <ChatInput 
                 onSendMessage={handleSendMessage} 
                 disabled={isLoading}
-                selectedModel={selectedBikeModel}
+                selectedModel={selectedBoatModel}
                 onModelSelect={handleModelSelect}
               />
             </div>
