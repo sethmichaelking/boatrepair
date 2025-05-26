@@ -4,7 +4,10 @@ import { ChatMessages } from "@/components/ChatMessages";
 import { ChatInput } from "@/components/ChatInput";
 import { LandingPage } from "@/components/LandingPage";
 import { ApiKeyModal } from "@/components/ApiKeyModal";
+import { ProblemHistorySidebar } from "@/components/ProblemHistorySidebar";
 import { Message } from "@/types/chat";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([
@@ -17,6 +20,7 @@ const Index = () => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [showApiModal, setShowApiModal] = useState(false);
+  const [showProblemHistory, setShowProblemHistory] = useState(false);
   const [apiKey, setApiKey] = useState<string>("");
   const [selectedBikeModel, setSelectedBikeModel] = useState<string>("");
 
@@ -124,6 +128,11 @@ const Index = () => {
     }
   };
 
+  const handleContinueTroubleshooting = (problem: string) => {
+    handleSendMessage(`🔁 Continue troubleshooting: ${problem}`);
+    setShowProblemHistory(false);
+  };
+
   const buildMessages = async (messageHistory: Message[]) => {
     let systemContent = `You are BikeBot, an expert AI assistant specializing in electric bike maintenance, repairs, and troubleshooting. You help users diagnose problems, suggest solutions, and provide maintenance advice. 
 
@@ -205,7 +214,28 @@ When users share images, analyze them carefully for any visible issues, wear pat
         onModelSelect={handleModelSelect}
       />
       
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4">
+      {/* Problem History Sidebar Button */}
+      <div className="fixed top-20 left-4 z-40">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowProblemHistory(true)}
+          className="bg-white shadow-md"
+        >
+          <Menu className="w-4 h-4 mr-2" />
+          History
+        </Button>
+      </div>
+
+      {/* Problem History Sidebar */}
+      <ProblemHistorySidebar
+        isOpen={showProblemHistory}
+        onClose={() => setShowProblemHistory(false)}
+        onContinueTroubleshooting={handleContinueTroubleshooting}
+      />
+
+      {/* Main Content */}
+      <div className={`flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4 transition-all duration-300 ${showProblemHistory ? 'ml-80' : ''}`}>
         {showLandingPage ? (
           <LandingPage 
             onExampleClick={handleExampleClick}
@@ -215,6 +245,7 @@ When users share images, analyze them carefully for any visible issues, wear pat
             messages={messages} 
             isLoading={isLoading} 
             onRepairFlowAction={handleRepairFlowAction}
+            selectedModel={selectedBikeModel}
           />
         )}
         <ChatInput 

@@ -7,10 +7,11 @@ import { TypingIndicator } from "./TypingIndicator";
 interface ChatMessagesProps {
   messages: Message[];
   isLoading: boolean;
+  selectedModel?: string;
   onRepairFlowAction?: (action: 'worked' | 'didnt-help' | 'send-photo') => void;
 }
 
-export const ChatMessages = ({ messages, isLoading, onRepairFlowAction }: ChatMessagesProps) => {
+export const ChatMessages = ({ messages, isLoading, selectedModel, onRepairFlowAction }: ChatMessagesProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -27,6 +28,7 @@ export const ChatMessages = ({ messages, isLoading, onRepairFlowAction }: ChatMe
         <MessageBubble 
           key={message.id} 
           message={message} 
+          selectedModel={selectedModel}
           onRepairFlowAction={onRepairFlowAction}
         />
       ))}

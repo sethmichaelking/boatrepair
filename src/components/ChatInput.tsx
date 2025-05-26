@@ -5,6 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Send, Camera, X } from "lucide-react";
 import { toast } from "sonner";
+import { QuickInsertPrompts } from "./QuickInsertPrompts";
+import { RotatingTips } from "./RotatingTips";
 
 interface ChatInputProps {
   onSendMessage: (content: string, imageFile?: File) => void;
@@ -17,6 +19,7 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
   const [message, setMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isIdle, setIsIdle] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const bikeModels = [
@@ -40,6 +43,7 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
     setMessage("");
     setSelectedImage(null);
     setImagePreview(null);
+    setIsIdle(false);
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,8 +78,34 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
     }
   };
 
+  const handlePromptSelect = (prompt: string) => {
+    setMessage(prompt);
+    setIsIdle(false);
+  };
+
+  // Show tips when user hasn't typed for a while
+  useState(() => {
+    let timeout: NodeJS.Timeout;
+    
+    if (!message.trim() && !disabled) {
+      timeout = setTimeout(() => {
+        setIsIdle(true);
+      }, 3000); // Show tips after 3 seconds of inactivity
+    } else {
+      setIsIdle(false);
+    }
+
+    return () => clearTimeout(timeout);
+  });
+
   return (
     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
+      {/* Quick Insert Prompts */}
+      <QuickInsertPrompts 
+        selectedModel={selectedModel} 
+        onPromptSelect={handlePromptSelect} 
+      />
+
       {imagePreview && (
         <div className="mb-4 relative inline-block">
           <img
@@ -114,7 +144,10 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
           <div className="flex-1">
             <textarea
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                setIsIdle(false);
+              }}
               onKeyPress={handleKeyPress}
               placeholder="Ask about your electric bike or describe the issue..."
               className="w-full h-12 px-3 py-3 text-sm border border-slate-200 rounded-md bg-white focus:border-blue-300 focus:ring-2 focus:ring-blue-300 focus:ring-opacity-20 outline-none resize-none overflow-hidden"
@@ -152,6 +185,9 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
           </div>
         </div>
       </form>
+
+      {/* Rotating Tips */}
+      <RotatingTips isVisible={isIdle} />
     </div>
   );
 };

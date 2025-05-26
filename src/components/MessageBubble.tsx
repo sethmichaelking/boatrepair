@@ -3,9 +3,12 @@ import { Message } from "@/types/chat";
 import { Bot, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RepairFlowButtons } from "./RepairFlowButtons";
+import { KnownIssueTag } from "./KnownIssueTag";
+import { ToolsSuggestion } from "./ToolsSuggestion";
 
 interface MessageBubbleProps {
   message: Message;
+  selectedModel?: string;
   onRepairFlowAction?: (action: 'worked' | 'didnt-help' | 'send-photo') => void;
 }
 
@@ -45,7 +48,7 @@ const renderMarkdown = (text: string) => {
   });
 };
 
-export const MessageBubble = ({ message, onRepairFlowAction }: MessageBubbleProps) => {
+export const MessageBubble = ({ message, selectedModel = "", onRepairFlowAction }: MessageBubbleProps) => {
   const isUser = message.role === "user";
   const isWelcomeMessage = message.id === "welcome";
 
@@ -69,6 +72,11 @@ export const MessageBubble = ({ message, onRepairFlowAction }: MessageBubbleProp
           ? "bg-blue-500 text-white" 
           : "bg-white border border-slate-200 text-slate-800"
       )}>
+        {/* Known Issue Tag for user messages */}
+        {isUser && selectedModel && (
+          <KnownIssueTag issue={message.content} model={selectedModel} />
+        )}
+
         {message.imageFile && (
           <div className="mb-3">
             <img
@@ -81,6 +89,12 @@ export const MessageBubble = ({ message, onRepairFlowAction }: MessageBubbleProp
         <div className="text-sm leading-relaxed">
           {renderMarkdown(message.content)}
         </div>
+
+        {/* Tools suggestion for assistant messages */}
+        {!isUser && (
+          <ToolsSuggestion content={message.content} />
+        )}
+
         <div className={cn(
           "text-xs mt-2 opacity-70",
           isUser ? "text-blue-100" : "text-slate-500"
