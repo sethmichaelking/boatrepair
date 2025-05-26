@@ -181,7 +181,11 @@ When users share images, analyze them carefully for any visible issues, wear pat
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col">
-      <ChatHeader onSettingsClick={() => setShowApiModal(true)} />
+      <ChatHeader 
+        onSettingsClick={() => setShowApiModal(true)}
+        selectedModel={selectedBikeModel}
+        onModelSelect={handleModelSelect}
+      />
       
       <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4">
         {showLandingPage ? (
