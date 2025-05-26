@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { ChatMessages } from "@/components/ChatMessages";
 import { ChatInput } from "@/components/ChatInput";
@@ -214,7 +215,7 @@ When users share images, analyze them carefully for any visible issues, wear pat
           />
           
           <SidebarInset className="flex flex-col">
-            <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4">
+            <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-6 py-6 pb-4">
               {showLandingPage ? (
                 <LandingPage 
                   onExampleClick={handleExampleClick}
