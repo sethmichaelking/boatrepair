@@ -1,20 +1,28 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ExternalLink, Key } from "lucide-react";
+import { ExternalLink, Key, Anchor } from "lucide-react";
 
 interface ApiKeyModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (apiKey: string) => void;
   currentApiKey?: string;
+  selectedModel?: string;
+  onModelSelect?: (model: string) => void;
 }
 
-export const ApiKeyModal = ({ isOpen, onClose, onSubmit, currentApiKey }: ApiKeyModalProps) => {
+export const ApiKeyModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  currentApiKey,
+  selectedModel,
+  onModelSelect
+}: ApiKeyModalProps) => {
   const [apiKey, setApiKey] = useState(currentApiKey || "");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -30,24 +38,40 @@ export const ApiKeyModal = ({ isOpen, onClose, onSubmit, currentApiKey }: ApiKey
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Key className="w-5 h-5" />
-            OpenAI API Key Required
+            Settings
           </DialogTitle>
           <DialogDescription>
-            To use BikeBot, you need to provide your OpenAI API key. This key is stored locally in your browser and never sent to our servers.
+            Configure your API key and boat details to get personalized assistance.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="api-key">API Key</Label>
-            <Input
-              id="api-key"
-              type="password"
-              placeholder="sk-..."
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="font-mono text-sm"
-            />
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="api-key">OpenAI API Key</Label>
+              <Input
+                id="api-key"
+                type="password"
+                placeholder="sk-..."
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                className="font-mono text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="boat-details" className="flex items-center gap-2">
+                <Anchor className="w-4 h-4" />
+                Boat Details
+              </Label>
+              <Input
+                id="boat-details"
+                value={selectedModel || ""}
+                onChange={(e) => onModelSelect?.(e.target.value)}
+                placeholder="e.g. 2020 Sea Ray 320 Sundancer, Twin 350hp Mercruiser"
+                className="text-sm"
+              />
+            </div>
           </div>
 
           <Alert>
@@ -70,7 +94,7 @@ export const ApiKeyModal = ({ isOpen, onClose, onSubmit, currentApiKey }: ApiKey
               Cancel
             </Button>
             <Button type="submit" disabled={!apiKey.trim()}>
-              Save API Key
+              Save Settings
             </Button>
           </div>
         </form>
