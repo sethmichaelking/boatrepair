@@ -18,14 +18,19 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showApiModal, setShowApiModal] = useState(false);
   const [apiKey, setApiKey] = useState<string>("");
+  const [selectedBikeModel, setSelectedBikeModel] = useState<string>("");
 
   // Check for API key in localStorage on component mount
   useState(() => {
     const savedApiKey = localStorage.getItem("openai_api_key");
+    const savedBikeModel = localStorage.getItem("selected_bike_model");
     if (savedApiKey) {
       setApiKey(savedApiKey);
     } else {
       setShowApiModal(true);
+    }
+    if (savedBikeModel) {
+      setSelectedBikeModel(savedBikeModel);
     }
   });
 
@@ -96,10 +101,21 @@ const Index = () => {
     handleSendMessage(text);
   };
 
+  const handleModelSelect = (model: string) => {
+    setSelectedBikeModel(model);
+    localStorage.setItem("selected_bike_model", model);
+  };
+
   const buildMessages = async (messageHistory: Message[]) => {
+    let systemContent = "You are BikeBot, an expert AI assistant specializing in electric bike maintenance, repairs, and troubleshooting. You help users diagnose problems, suggest solutions, and provide maintenance advice. When users share images, analyze them carefully for any visible issues, wear patterns, or problems. Always provide practical, safety-focused advice and suggest when professional help might be needed for complex electrical or mechanical issues.";
+    
+    if (selectedBikeModel && selectedBikeModel !== "Other/Generic") {
+      systemContent += ` The user has a ${selectedBikeModel} electric bike. Please provide model-specific advice when relevant, including known issues, specific maintenance requirements, and compatibility considerations for this model.`;
+    }
+
     const systemMessage = {
       role: "system",
-      content: "You are BikeBot, an expert AI assistant specializing in electric bike maintenance, repairs, and troubleshooting. You help users diagnose problems, suggest solutions, and provide maintenance advice. When users share images, analyze them carefully for any visible issues, wear patterns, or problems. Always provide practical, safety-focused advice and suggest when professional help might be needed for complex electrical or mechanical issues."
+      content: systemContent
     };
 
     const chatMessages = await Promise.all(
@@ -158,7 +174,11 @@ const Index = () => {
       
       <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4">
         {showLandingPage ? (
-          <LandingPage onExampleClick={handleExampleClick} />
+          <LandingPage 
+            onExampleClick={handleExampleClick}
+            selectedModel={selectedBikeModel}
+            onModelSelect={handleModelSelect}
+          />
         ) : (
           <ChatMessages messages={messages} isLoading={isLoading} />
         )}

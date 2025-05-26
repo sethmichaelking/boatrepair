@@ -1,11 +1,14 @@
 
 import { Wrench, Camera, MessageCircle, Zap } from "lucide-react";
+import { BikeModelSelector } from "./BikeModelSelector";
 
 interface LandingPageProps {
   onExampleClick: (text: string) => void;
+  selectedModel: string;
+  onModelSelect: (model: string) => void;
 }
 
-export const LandingPage = ({ onExampleClick }: LandingPageProps) => {
+export const LandingPage = ({ onExampleClick, selectedModel, onModelSelect }: LandingPageProps) => {
   const examples = [
     "My electric bike won't turn on, what should I check?",
     "How do I maintain my e-bike battery for longer life?",
@@ -44,10 +47,15 @@ export const LandingPage = ({ onExampleClick }: LandingPageProps) => {
           </div>
         </div>
 
-        <p className="text-lg text-slate-700 mb-12 leading-relaxed">
+        <p className="text-lg text-slate-700 mb-8 leading-relaxed">
           Get expert help with your electric bike maintenance, troubleshooting, and repairs. 
           Ask questions, upload photos, and receive personalized guidance.
         </p>
+
+        <BikeModelSelector 
+          selectedModel={selectedModel}
+          onModelSelect={onModelSelect}
+        />
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           {capabilities.map((capability, index) => (
