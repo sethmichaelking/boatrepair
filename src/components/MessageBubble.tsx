@@ -22,14 +22,23 @@ const renderMarkdown = (text: string) => {
       );
     }
     
-    // Handle bold text by replacing **text** with <strong>text</strong>
-    const processedLine = line.replace(/\*\*([^*]+)\*\*/g, (match, content) => {
-      return `<strong class="font-semibold">${content}</strong>`;
+    // Split line by bold patterns and render as React components
+    const parts = line.split(/(\*\*[^*]+\*\*)/g);
+    
+    const renderedParts = parts.map((part, partIndex) => {
+      if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+        return (
+          <strong key={`bold-${lineIndex}-${partIndex}`} className="font-semibold">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      return part;
     });
     
     return (
       <div key={`line-${lineIndex}`}>
-        <span dangerouslySetInnerHTML={{ __html: processedLine }} />
+        {renderedParts}
         {lineIndex < lines.length - 1 && <br />}
       </div>
     );
@@ -49,7 +58,7 @@ export const MessageBubble = ({ message, onRepairFlowAction }: MessageBubbleProp
   return (
     <div className={cn("flex gap-3 items-start", isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
-        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0">
           <Bot className="w-4 h-4 text-white" />
         </div>
       )}
@@ -93,7 +102,7 @@ export const MessageBubble = ({ message, onRepairFlowAction }: MessageBubbleProp
       </div>
 
       {isUser && (
-        <div className="w-8 h-8 bg-slate-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+        <div className="w-8 h-8 bg-slate-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0">
           <User className="w-4 h-4 text-white" />
         </div>
       )}
