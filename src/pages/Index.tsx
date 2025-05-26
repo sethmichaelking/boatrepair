@@ -209,8 +209,6 @@ When users share images, analyze them carefully for any visible issues, wear pat
         {showLandingPage ? (
           <LandingPage 
             onExampleClick={handleExampleClick}
-            selectedModel={selectedBikeModel}
-            onModelSelect={handleModelSelect}
           />
         ) : (
           <ChatMessages 

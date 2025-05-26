@@ -1,16 +1,12 @@
 
 import { Zap, Camera, MessageSquare, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BikeModelSelector } from "./BikeModelSelector";
-import { ErrorCodeLookup } from "./ErrorCodeLookup";
 
 interface LandingPageProps {
   onExampleClick: (text: string) => void;
-  selectedModel: string;
-  onModelSelect: (model: string) => void;
 }
 
-export const LandingPage = ({ onExampleClick, selectedModel, onModelSelect }: LandingPageProps) => {
+export const LandingPage = ({ onExampleClick }: LandingPageProps) => {
   const examples = [
     {
       icon: <Camera className="w-5 h-5" />,
@@ -50,17 +46,6 @@ export const LandingPage = ({ onExampleClick, selectedModel, onModelSelect }: La
         <p className="text-xl text-slate-600 mb-8 max-w-2xl">
           Your AI-powered electric bike maintenance and repair assistant. Get expert help with diagnostics, troubleshooting, and maintenance guidance.
         </p>
-      </div>
-
-      <div className="w-full max-w-2xl mb-8">
-        <BikeModelSelector 
-          selectedModel={selectedModel}
-          onModelSelect={onModelSelect}
-        />
-      </div>
-
-      <div className="w-full max-w-2xl mb-8">
-        <ErrorCodeLookup onSendToChat={onExampleClick} />
       </div>
 
       <div className="w-full max-w-4xl">

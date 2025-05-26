@@ -95,7 +95,22 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
       )}
 
       <form onSubmit={handleSubmit} className="space-y-3">
-        <div className="flex items-center gap-3">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-48">
+            <Select value={selectedModel} onValueChange={onModelSelect}>
+              <SelectTrigger className="h-12 border-slate-200 focus:border-blue-300 focus:ring-blue-300">
+                <SelectValue placeholder="Select bike model..." />
+              </SelectTrigger>
+              <SelectContent className="bg-white border border-slate-200 shadow-lg z-50">
+                {bikeModels.map((model) => (
+                  <SelectItem key={model} value={model} className="hover:bg-slate-50">
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
           <div className="flex-1">
             <Textarea
               value={message}
@@ -107,7 +122,7 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
             />
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-shrink-0">
             <input
               ref={fileInputRef}
               type="file"
@@ -134,23 +149,6 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
             >
               <Send className="w-4 h-4" />
             </Button>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <Select value={selectedModel} onValueChange={onModelSelect}>
-              <SelectTrigger className="h-12 border-slate-200 focus:border-blue-300 focus:ring-blue-300">
-                <SelectValue placeholder="Select your bike model..." />
-              </SelectTrigger>
-              <SelectContent className="bg-white border border-slate-200 shadow-lg z-50">
-                {bikeModels.map((model) => (
-                  <SelectItem key={model} value={model} className="hover:bg-slate-50">
-                    {model}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
         </div>
       </form>
