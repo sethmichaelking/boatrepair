@@ -2,19 +2,35 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Send, Camera, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface ChatInputProps {
   onSendMessage: (content: string, imageFile?: File) => void;
   disabled: boolean;
+  selectedModel: string;
+  onModelSelect: (model: string) => void;
 }
 
-export const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
+export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelect }: ChatInputProps) => {
   const [message, setMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const bikeModels = [
+    "Macfox X2",
+    "Rad Power RadCity",
+    "Trek Verve+",
+    "Specialized Turbo Vado",
+    "Cannondale Quick Neo",
+    "Giant Quick-E+",
+    "Yamaha CrossCore",
+    "Bosch Performance Line",
+    "Bafang Mid-Drive",
+    "Other/Generic"
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,45 +94,64 @@ export const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex items-end gap-3">
-        <div className="flex-1">
-          <Textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Ask about your electric bike or describe the issue..."
-            className="min-h-[48px] max-h-32 resize-none border-slate-200 focus:border-blue-300 focus:ring-blue-300"
-            disabled={disabled}
-          />
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="flex-1">
+            <Textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Ask about your electric bike or describe the issue..."
+              className="min-h-[48px] max-h-32 resize-none border-slate-200 focus:border-blue-300 focus:ring-blue-300"
+              disabled={disabled}
+            />
+          </div>
+          
+          <div className="flex gap-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+            
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={disabled}
+              className="w-12 h-12 p-0"
+            >
+              <Camera className="w-4 h-4" />
+            </Button>
+            
+            <Button
+              type="submit"
+              disabled={disabled || (!message.trim() && !selectedImage)}
+              className="w-12 h-12 p-0 bg-blue-500 hover:bg-blue-600"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
-        
-        <div className="flex gap-2">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleImageSelect}
-            className="hidden"
-          />
-          
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={disabled}
-            className="w-12 h-12 p-0"
-          >
-            <Camera className="w-4 h-4" />
-          </Button>
-          
-          <Button
-            type="submit"
-            disabled={disabled || (!message.trim() && !selectedImage)}
-            className="w-12 h-12 p-0 bg-blue-500 hover:bg-blue-600"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
+
+        <div className="flex items-center gap-3">
+          <div className="flex-1">
+            <Select value={selectedModel} onValueChange={onModelSelect}>
+              <SelectTrigger className="h-12 border-slate-200 focus:border-blue-300 focus:ring-blue-300">
+                <SelectValue placeholder="Select your bike model..." />
+              </SelectTrigger>
+              <SelectContent className="bg-white border border-slate-200 shadow-lg z-50">
+                {bikeModels.map((model) => (
+                  <SelectItem key={model} value={model} className="hover:bg-slate-50">
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </form>
     </div>

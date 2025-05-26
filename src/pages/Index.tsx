@@ -193,7 +193,12 @@ When users share images, analyze them carefully for any visible issues, wear pat
         ) : (
           <ChatMessages messages={messages} isLoading={isLoading} />
         )}
-        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+        <ChatInput 
+          onSendMessage={handleSendMessage} 
+          disabled={isLoading}
+          selectedModel={selectedBikeModel}
+          onModelSelect={handleModelSelect}
+        />
       </div>
 
       <ApiKeyModal
