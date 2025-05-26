@@ -112,13 +112,14 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
           </div>
           
           <div className="flex-1">
-            <Textarea
+            <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask about your electric bike or describe the issue..."
-              className="min-h-[48px] max-h-32 resize-none border-slate-200 focus:border-blue-300 focus:ring-blue-300"
+              className="w-full h-12 px-3 py-3 text-sm border border-slate-200 rounded-md bg-white focus:border-blue-300 focus:ring-2 focus:ring-blue-300 focus:ring-opacity-20 outline-none resize-none overflow-hidden"
               disabled={disabled}
+              rows={1}
             />
           </div>
           
@@ -134,10 +135,9 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
             <Button
               type="button"
               variant="outline"
-              size="sm"
               onClick={() => fileInputRef.current?.click()}
               disabled={disabled}
-              className="w-12 h-12 p-0"
+              className="w-12 h-12 p-0 border-slate-200 hover:bg-slate-50"
             >
               <Camera className="w-4 h-4" />
             </Button>
