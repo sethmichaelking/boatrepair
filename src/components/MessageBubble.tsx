@@ -2,9 +2,11 @@
 import { Message } from "@/types/chat";
 import { Bot, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { RepairFlowButtons } from "./RepairFlowButtons";
 
 interface MessageBubbleProps {
   message: Message;
+  onRepairFlowAction?: (action: 'worked' | 'didnt-help' | 'send-photo') => void;
 }
 
 const renderMarkdown = (text: string) => {
@@ -31,8 +33,15 @@ const renderMarkdown = (text: string) => {
   });
 };
 
-export const MessageBubble = ({ message }: MessageBubbleProps) => {
+export const MessageBubble = ({ message, onRepairFlowAction }: MessageBubbleProps) => {
   const isUser = message.role === "user";
+  const isWelcomeMessage = message.id === "welcome";
+
+  const handleRepairFlowAction = (action: 'worked' | 'didnt-help' | 'send-photo') => {
+    if (onRepairFlowAction) {
+      onRepairFlowAction(action);
+    }
+  };
 
   return (
     <div className={cn("flex gap-3", isUser ? "justify-end" : "justify-start")}>
@@ -69,6 +78,15 @@ export const MessageBubble = ({ message }: MessageBubbleProps) => {
             minute: '2-digit' 
           })}
         </div>
+
+        {/* Show repair flow buttons for assistant messages (except welcome message) */}
+        {!isUser && !isWelcomeMessage && onRepairFlowAction && (
+          <RepairFlowButtons
+            onWorked={() => handleRepairFlowAction('worked')}
+            onDidntHelp={() => handleRepairFlowAction('didnt-help')}
+            onSendPhoto={() => handleRepairFlowAction('send-photo')}
+          />
+        )}
       </div>
 
       {isUser && (

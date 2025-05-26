@@ -106,6 +106,24 @@ const Index = () => {
     localStorage.setItem("selected_bike_model", model);
   };
 
+  const handleRepairFlowAction = (action: 'worked' | 'didnt-help' | 'send-photo') => {
+    switch (action) {
+      case 'worked':
+        handleSendMessage("✅ That solution worked! Thank you for the help.");
+        break;
+      case 'didnt-help':
+        handleSendMessage("🔁 That didn't help. Can you show me the next step or suggest an alternative solution?");
+        break;
+      case 'send-photo':
+        // This will trigger the file input in ChatInput
+        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+        if (fileInput) {
+          fileInput.click();
+        }
+        break;
+    }
+  };
+
   const buildMessages = async (messageHistory: Message[]) => {
     let systemContent = `You are BikeBot, an expert AI assistant specializing in electric bike maintenance, repairs, and troubleshooting. You help users diagnose problems, suggest solutions, and provide maintenance advice. 
 
@@ -195,7 +213,11 @@ When users share images, analyze them carefully for any visible issues, wear pat
             onModelSelect={handleModelSelect}
           />
         ) : (
-          <ChatMessages messages={messages} isLoading={isLoading} />
+          <ChatMessages 
+            messages={messages} 
+            isLoading={isLoading} 
+            onRepairFlowAction={handleRepairFlowAction}
+          />
         )}
         <ChatInput 
           onSendMessage={handleSendMessage} 
