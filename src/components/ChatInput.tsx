@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Send, Camera, X } from "lucide-react";
 import { toast } from "sonner";
 import { QuickInsertPrompts } from "./QuickInsertPrompts";
-import { RotatingTips } from "./RotatingTips";
 
 interface ChatInputProps {
   onSendMessage: (content: string, imageFile?: File) => void;
@@ -19,7 +18,6 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
   const [message, setMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isIdle, setIsIdle] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const bikeModels = [
@@ -43,7 +41,6 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
     setMessage("");
     setSelectedImage(null);
     setImagePreview(null);
-    setIsIdle(false);
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,23 +77,7 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
 
   const handlePromptSelect = (prompt: string) => {
     setMessage(prompt);
-    setIsIdle(false);
   };
-
-  // Show tips when user hasn't typed for a while
-  useState(() => {
-    let timeout: NodeJS.Timeout;
-    
-    if (!message.trim() && !disabled) {
-      timeout = setTimeout(() => {
-        setIsIdle(true);
-      }, 3000); // Show tips after 3 seconds of inactivity
-    } else {
-      setIsIdle(false);
-    }
-
-    return () => clearTimeout(timeout);
-  });
 
   return (
     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
@@ -146,7 +127,6 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
               value={message}
               onChange={(e) => {
                 setMessage(e.target.value);
-                setIsIdle(false);
               }}
               onKeyPress={handleKeyPress}
               placeholder="Ask about your electric bike or describe the issue..."
@@ -185,9 +165,6 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
           </div>
         </div>
       </form>
-
-      {/* Rotating Tips */}
-      <RotatingTips isVisible={isIdle} />
     </div>
   );
 };
