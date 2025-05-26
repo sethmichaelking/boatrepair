@@ -10,35 +10,65 @@ interface MessageBubbleProps {
 }
 
 const renderMarkdown = (text: string) => {
-  // Split by markdown patterns while preserving the delimiters
-  const parts = text.split(/(\*\*[^*]+\*\*|###\s[^\n]+|\n)/g);
+  // Process the text to handle markdown patterns
+  let processedText = text;
+  const elements: JSX.Element[] = [];
+  let currentIndex = 0;
   
-  return parts.map((part, index) => {
-    // Handle headers (### )
-    if (part.startsWith('### ')) {
+  // Split by line breaks first to handle them properly
+  const lines = processedText.split('\n');
+  
+  return lines.map((line, lineIndex) => {
+    const lineElements: (string | JSX.Element)[] = [];
+    let remaining = line;
+    let elementIndex = 0;
+    
+    // Handle headers first
+    if (remaining.startsWith('### ')) {
       return (
-        <h3 key={index} className="font-bold text-lg mt-4 mb-2 first:mt-0">
-          {part.slice(4)}
-        </h3>
+        <div key={`line-${lineIndex}`}>
+          <h3 className="font-bold text-lg mt-4 mb-2 first:mt-0">
+            {remaining.slice(4)}
+          </h3>
+        </div>
       );
     }
     
-    // Handle bold text - check if it starts AND ends with **
-    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
-      return (
-        <strong key={index} className="font-semibold">
-          {part.slice(2, -2)}
-        </strong>
-      );
+    // Handle bold text
+    while (remaining.length > 0) {
+      const boldMatch = remaining.match(/\*\*([^*]+)\*\*/);
+      
+      if (boldMatch && boldMatch.index !== undefined) {
+        // Add text before the bold part
+        if (boldMatch.index > 0) {
+          lineElements.push(remaining.slice(0, boldMatch.index));
+        }
+        
+        // Add the bold part
+        lineElements.push(
+          <strong key={`bold-${lineIndex}-${elementIndex}`} className="font-semibold">
+            {boldMatch[1]}
+          </strong>
+        );
+        
+        // Move to the text after the bold part
+        remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
+        elementIndex++;
+      } else {
+        // No more bold text, add the remaining text
+        if (remaining.length > 0) {
+          lineElements.push(remaining);
+        }
+        break;
+      }
     }
     
-    // Handle line breaks
-    if (part === '\n') {
-      return <br key={index} />;
-    }
-    
-    // Regular text
-    return part;
+    return (
+      <div key={`line-${lineIndex}`}>
+        {lineElements.length > 0 ? lineElements : line}
+        {lineIndex < lines.length - 1 && <br />}
+      </div>
+    );
   });
 };
 
