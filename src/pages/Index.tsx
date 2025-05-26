@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { ChatHeader } from "@/components/ChatHeader";
 import { ChatMessages } from "@/components/ChatMessages";
 import { ChatInput } from "@/components/ChatInput";
 import { LandingPage } from "@/components/LandingPage";
 import { ApiKeyModal } from "@/components/ApiKeyModal";
-import { ProblemHistorySidebar } from "@/components/ProblemHistorySidebar";
+import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { Message } from "@/types/chat";
-import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([
@@ -20,7 +18,6 @@ const Index = () => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [showApiModal, setShowApiModal] = useState(false);
-  const [showProblemHistory, setShowProblemHistory] = useState(false);
   const [apiKey, setApiKey] = useState<string>("");
   const [selectedBikeModel, setSelectedBikeModel] = useState<string>("");
 
@@ -130,7 +127,6 @@ const Index = () => {
 
   const handleContinueTroubleshooting = (problem: string) => {
     handleSendMessage(`🔁 Continue troubleshooting: ${problem}`);
-    setShowProblemHistory(false);
   };
 
   const buildMessages = async (messageHistory: Message[]) => {
@@ -207,61 +203,47 @@ When users share images, analyze them carefully for any visible issues, wear pat
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col">
-      <ChatHeader 
-        onSettingsClick={() => setShowApiModal(true)}
-        selectedModel={selectedBikeModel}
-        onModelSelect={handleModelSelect}
-      />
-      
-      {/* Problem History Sidebar Button */}
-      <div className="fixed top-20 left-4 z-40">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setShowProblemHistory(true)}
-          className="bg-white shadow-md"
-        >
-          <Menu className="w-4 h-4 mr-2" />
-          History
-        </Button>
-      </div>
-
-      {/* Problem History Sidebar */}
-      <ProblemHistorySidebar
-        isOpen={showProblemHistory}
-        onClose={() => setShowProblemHistory(false)}
-        onContinueTroubleshooting={handleContinueTroubleshooting}
-      />
-
-      {/* Main Content */}
-      <div className={`flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4 transition-all duration-300 ${showProblemHistory ? 'ml-80' : ''}`}>
-        {showLandingPage ? (
-          <LandingPage 
-            onExampleClick={handleExampleClick}
-          />
-        ) : (
-          <ChatMessages 
-            messages={messages} 
-            isLoading={isLoading} 
-            onRepairFlowAction={handleRepairFlowAction}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full">
+          <AppSidebar
+            onSettingsClick={() => setShowApiModal(true)}
             selectedModel={selectedBikeModel}
+            onModelSelect={handleModelSelect}
+            onContinueTroubleshooting={handleContinueTroubleshooting}
           />
-        )}
-        <ChatInput 
-          onSendMessage={handleSendMessage} 
-          disabled={isLoading}
-          selectedModel={selectedBikeModel}
-          onModelSelect={handleModelSelect}
-        />
-      </div>
+          
+          <SidebarInset className="flex flex-col">
+            <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4">
+              {showLandingPage ? (
+                <LandingPage 
+                  onExampleClick={handleExampleClick}
+                />
+              ) : (
+                <ChatMessages 
+                  messages={messages} 
+                  isLoading={isLoading} 
+                  onRepairFlowAction={handleRepairFlowAction}
+                  selectedModel={selectedBikeModel}
+                />
+              )}
+              <ChatInput 
+                onSendMessage={handleSendMessage} 
+                disabled={isLoading}
+                selectedModel={selectedBikeModel}
+                onModelSelect={handleModelSelect}
+              />
+            </div>
+          </SidebarInset>
+        </div>
 
-      <ApiKeyModal
-        isOpen={showApiModal}
-        onClose={() => setShowApiModal(false)}
-        onSubmit={handleApiKeySubmit}
-        currentApiKey={apiKey}
-      />
+        <ApiKeyModal
+          isOpen={showApiModal}
+          onClose={() => setShowApiModal(false)}
+          onSubmit={handleApiKeySubmit}
+          currentApiKey={apiKey}
+        />
+      </SidebarProvider>
     </div>
   );
 };
