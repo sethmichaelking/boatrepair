@@ -78,7 +78,7 @@ export const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex gap-3">
+      <form onSubmit={handleSubmit} className="flex items-end gap-3">
         <div className="flex-1">
           <Textarea
             value={message}
@@ -90,7 +90,7 @@ export const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
           />
         </div>
         
-        <div className="flex flex-col gap-2">
+        <div className="flex gap-2">
           <input
             ref={fileInputRef}
             type="file"

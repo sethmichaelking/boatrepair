@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 import { ChatHeader } from "@/components/ChatHeader";
 import { ChatMessages } from "@/components/ChatMessages";
 import { ChatInput } from "@/components/ChatInput";
+import { LandingPage } from "@/components/LandingPage";
 import { ApiKeyModal } from "@/components/ApiKeyModal";
 import { Message } from "@/types/chat";
 
@@ -28,6 +28,10 @@ const Index = () => {
       setShowApiModal(true);
     }
   });
+
+  // Check if user has sent any messages (excluding the welcome message)
+  const userMessages = messages.filter(msg => msg.role === "user");
+  const showLandingPage = userMessages.length === 0;
 
   const handleSendMessage = async (content: string, imageFile?: File) => {
     if (!apiKey) {
@@ -86,6 +90,10 @@ const Index = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleExampleClick = (text: string) => {
+    handleSendMessage(text);
   };
 
   const buildMessages = async (messageHistory: Message[]) => {
@@ -149,7 +157,11 @@ const Index = () => {
       <ChatHeader onSettingsClick={() => setShowApiModal(true)} />
       
       <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4">
-        <ChatMessages messages={messages} isLoading={isLoading} />
+        {showLandingPage ? (
+          <LandingPage onExampleClick={handleExampleClick} />
+        ) : (
+          <ChatMessages messages={messages} isLoading={isLoading} />
+        )}
         <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
       </div>
 
