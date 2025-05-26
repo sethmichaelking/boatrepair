@@ -1,7 +1,6 @@
 
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Send, Camera, X } from "lucide-react";
 import { toast } from "sonner";
@@ -80,7 +79,7 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
+    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 mx-6 mb-6">
       {/* Quick Insert Prompts */}
       <QuickInsertPrompts 
         selectedModel={selectedModel} 
