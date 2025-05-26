@@ -95,7 +95,7 @@ export const ChatInput = ({ onSendMessage, disabled, selectedModel, onModelSelec
       )}
 
       <form onSubmit={handleSubmit} className="space-y-3">
-        <div className="flex items-start gap-3">
+        <div className="flex items-center gap-3">
           <div className="flex-shrink-0 w-48">
             <Select value={selectedModel} onValueChange={onModelSelect}>
               <SelectTrigger className="h-12 border-slate-200 focus:border-blue-300 focus:ring-blue-300">

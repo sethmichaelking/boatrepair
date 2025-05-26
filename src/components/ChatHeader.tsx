@@ -25,8 +25,8 @@ export const ChatHeader = ({ onSettingsClick, selectedModel, onModelSelect }: Ch
 
   return (
     <header className="bg-white border-b border-slate-200 shadow-sm">
-      <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3 flex-shrink-0">
+      <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
             <Zap className="w-6 h-6 text-white" />
           </div>
@@ -36,39 +36,41 @@ export const ChatHeader = ({ onSettingsClick, selectedModel, onModelSelect }: Ch
           </div>
         </div>
 
-        {selectedModel && (
-          <div className="flex items-center gap-3 bg-blue-50 px-4 py-2.5 rounded-lg border border-blue-200 flex-shrink-0">
-            <Wrench className="w-4 h-4 text-blue-600" />
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-blue-800 whitespace-nowrap">Working on:</span>
-              {onModelSelect ? (
-                <Select value={selectedModel} onValueChange={onModelSelect}>
-                  <SelectTrigger className="h-8 min-w-[160px] border-blue-300 bg-white text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {bikeModels.map((model) => (
-                      <SelectItem key={model} value={model} className="text-sm">
-                        {model}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <span className="text-sm font-semibold text-blue-900 whitespace-nowrap">{selectedModel}</span>
-              )}
+        <div className="flex items-center gap-4">
+          {selectedModel && (
+            <div className="flex items-center gap-3 bg-blue-50 px-4 py-2.5 rounded-lg border border-blue-200">
+              <Wrench className="w-4 h-4 text-blue-600" />
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-blue-800 whitespace-nowrap">Working on:</span>
+                {onModelSelect ? (
+                  <Select value={selectedModel} onValueChange={onModelSelect}>
+                    <SelectTrigger className="h-8 min-w-[160px] border-blue-300 bg-white text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {bikeModels.map((model) => (
+                        <SelectItem key={model} value={model} className="text-sm">
+                          {model}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <span className="text-sm font-semibold text-blue-900 whitespace-nowrap">{selectedModel}</span>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onSettingsClick}
-          className="text-slate-600 hover:text-slate-800 flex-shrink-0"
-        >
-          <Settings className="w-5 h-5" />
-        </Button>
+          )}
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onSettingsClick}
+            className="text-slate-600 hover:text-slate-800"
+          >
+            <Settings className="w-5 h-5" />
+          </Button>
+        </div>
       </div>
     </header>
   );
