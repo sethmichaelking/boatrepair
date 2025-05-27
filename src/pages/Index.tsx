@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ChatMessages } from "@/components/ChatMessages";
 import { ChatInput } from "@/components/ChatInput";
 import { LandingPage } from "@/components/LandingPage";
-import { ApiKeyModal } from "@/components/ApiKeyModal";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { Message } from "@/types/chat";
@@ -26,7 +25,6 @@ const Index = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showApiModal, setShowApiModal] = useState(false);
   const [selectedBoatModel, setSelectedBoatModel] = useState<string>("");
 
   // Load conversations from localStorage on mount
@@ -59,7 +57,7 @@ const Index = () => {
   const handleSendMessage = async (content: string, imageFile?: File) => {
     const apiKey = import.meta.env.OPEN_AI_KEY;
     if (!apiKey) {
-      setShowApiModal(true);
+      console.error("OpenAI API key not found in environment variables");
       return;
     }
 
@@ -107,7 +105,7 @@ const Index = () => {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "Sorry, I encountered an error while processing your request. Please check your API key and try again.",
+        content: "Sorry, I encountered an error while processing your request. Please try again.",
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -260,7 +258,7 @@ When users share images, analyze them carefully for any visible issues, wear pat
       <SidebarProvider>
         <div className="flex min-h-screen w-full">
           <AppSidebar
-            onSettingsClick={() => setShowApiModal(true)}
+            onSettingsClick={() => {}}
             selectedModel={selectedBoatModel}
             onModelSelect={handleModelSelect}
             onContinueTroubleshooting={handleContinueTroubleshooting}
@@ -300,15 +298,6 @@ When users share images, analyze them carefully for any visible issues, wear pat
             </div>
           </SidebarInset>
         </div>
-
-        <ApiKeyModal
-          isOpen={showApiModal}
-          onClose={() => setShowApiModal(false)}
-          onSubmit={() => setShowApiModal(false)}
-          currentApiKey=""
-          selectedModel={selectedBoatModel}
-          onModelSelect={handleModelSelect}
-        />
       </SidebarProvider>
     </div>
   );
