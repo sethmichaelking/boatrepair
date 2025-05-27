@@ -27,7 +27,6 @@ const Index = () => {
   const [currentConversationId, setCurrentConversationId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [showApiModal, setShowApiModal] = useState(false);
-  const [apiKey, setApiKey] = useState<string>("");
   const [selectedBoatModel, setSelectedBoatModel] = useState<string>("");
 
   // Load conversations from localStorage on mount
@@ -45,25 +44,20 @@ const Index = () => {
     }
   }, [conversations]);
 
-  // Check for API key in localStorage on component mount
-  useState(() => {
-    const savedApiKey = localStorage.getItem("openai_api_key");
+  // Check for boat model in localStorage on component mount
+  useEffect(() => {
     const savedBoatModel = localStorage.getItem("selected_boat_model");
-    if (savedApiKey) {
-      setApiKey(savedApiKey);
-    } else {
-      setShowApiModal(true);
-    }
     if (savedBoatModel) {
       setSelectedBoatModel(savedBoatModel);
     }
-  });
+  }, []);
 
   // Check if user has sent any messages (excluding the welcome message)
   const userMessages = messages.filter(msg => msg.role === "user");
   const showLandingPage = userMessages.length === 0;
 
   const handleSendMessage = async (content: string, imageFile?: File) => {
+    const apiKey = import.meta.env.OPEN_AI_KEY;
     if (!apiKey) {
       setShowApiModal(true);
       return;
@@ -88,7 +82,7 @@ const Index = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "gpt-4o",
+          model: "gpt-4",
           messages: await buildMessages([...messages, userMessage]),
           max_tokens: 1000,
           temperature: 0.7,
@@ -139,13 +133,13 @@ const Index = () => {
       case 'didnt-help':
         handleSendMessage("🔁 That didn't help. Can you show me the next step or suggest an alternative solution?");
         break;
-      case 'send-photo':
-        // This will trigger the file input in ChatInput
+      case 'send-photo': {
         const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
         if (fileInput) {
           fileInput.click();
         }
         break;
+      }
     }
   };
 
@@ -261,12 +255,6 @@ When users share images, analyze them carefully for any visible issues, wear pat
     });
   };
 
-  const handleApiKeySubmit = (key: string) => {
-    setApiKey(key);
-    localStorage.setItem("openai_api_key", key);
-    setShowApiModal(false);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <SidebarProvider>
@@ -316,8 +304,8 @@ When users share images, analyze them carefully for any visible issues, wear pat
         <ApiKeyModal
           isOpen={showApiModal}
           onClose={() => setShowApiModal(false)}
-          onSubmit={handleApiKeySubmit}
-          currentApiKey={apiKey}
+          onSubmit={() => setShowApiModal(false)}
+          currentApiKey=""
           selectedModel={selectedBoatModel}
           onModelSelect={handleModelSelect}
         />
