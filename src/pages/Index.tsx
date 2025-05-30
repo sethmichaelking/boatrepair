@@ -55,7 +55,7 @@ const Index = () => {
   const showLandingPage = userMessages.length === 0;
 
   const handleSendMessage = async (content: string, imageFile?: File) => {
-    const apiKey = import.meta.env.OPEN_AI_KEY;
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
       console.error("OpenAI API key not found in environment variables");
       return;
